@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/layout :: layout(~{::title},~{::div},~{::script})}">
+<head>
+    <meta charset="UTF-8">
+    <title>歌曲页面</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <!-- 存放歌单 -->
+            <div class="col-4">
+                <ul th:each="playlist : ${playlists}" class="list-group-item">
+                    <!-- /home?playListId=XXX -->
+                    <a th:href="@{/home(playListId=${playlist.id})}" th:text="${playlist.title}"></a>
+                </ul>
+            </div>
+            <!-- 存放歌曲 -->
+            <div class="col-8">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">歌曲名称</th>
+                            <th scope="col">歌手</th>
+                            <th scope="col">时长</th>
+                            <th scope="col">播放</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="song,iterStat : ${songs}">
+                            <th scope="row" th:text="${iterStat.index}"></th>
+                            <td style="word-break: break-all" th:text="${song.name}"></td>
+                            <td th:text="${song.singer}"></td>
+                            <td th:text="${song.duration}"></td>
+                            <td>
+                                <a href="#" class="play-btn" th:data-id="${song.id}">
+                                    <img src="/play.png">
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var audio = new Audio();
+        $(document).ready(function (response) {
+
+            $('.play-btn').on('click',function(e) {
+                <!-- e.preventDefault()来阻止这个默认事件 -->
+                e.preventDefault();
+                audio.src = "/music/" + $(this).data("id") + ".mp3";
+                audio.play();
+                getDoc();
+            });
+
+        });
+        function getDoc(){
+            var xmlhttp;
+            if(window.xmlhttpRequest){
+                xmlhttp=new XMLHttpRequest();
+            }
+            else{
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");//for IE6
+            }
+            xmlhttp.onreadystatechange = function(){
+                alert("aaa"+ xmlhttp.status);
+            }
+        }
+
+    </script>
+</body>
+</html>
